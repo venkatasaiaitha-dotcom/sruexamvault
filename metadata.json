@@ -1,0 +1,6 @@
+{
+  "name": "SRU ExamVault",
+  "description": "SR University ExamVault - Question Paper Archive web portal & application for semester and mid exams with branch filtering, offline reader, ratings, contributor leaderboard, and alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

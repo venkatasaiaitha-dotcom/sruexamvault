@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SR University ExamVault - Question Paper Archive Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- AUTHENTICATION SCREEN (LOGIN / REGISTER) -->
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="university-crest">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h1>SR UNIVERSITY</h1>
+          <p class="auth-subtitle">EXAMINATION VAULT &bull; QUESTION PAPERS ARCHIVE</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button id="tab-login-btn" class="auth-tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
+          <button id="tab-register-btn" class="auth-tab-btn" onclick="switchAuthTab('register')">New Student</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="login-roll">Student Roll Number / Faculty ID</label>
+            <input type="text" id="login-roll" placeholder="e.g. 2103A51001" required value="2103A51001">
+          </div>
+
+          <div class="form-group">
+            <label for="login-email">SRU Institutional Email</label>
+            <input type="email" id="login-email" placeholder="student@sru.edu.in" required value="saikiran.a@sru.edu.in">
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required value="sru12345">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Sign In to ExamVault</button>
+          <button type="button" class="btn btn-outline btn-block mt-2" onclick="quickDemoLogin()">Quick Demo Access</button>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="register-form" class="auth-form hidden" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="e.g. Aitha Venkata Sai" required>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-roll">Roll Number</label>
+            <input type="text" id="reg-roll" placeholder="e.g. 2203A52014" required>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email">SRU Email Address</label>
+            <input type="email" id="reg-email" placeholder="student@sru.edu.in" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-branch">Department</label>
+              <select id="reg-branch" required>
+                <option value="CSE">Computer Science & Engineering</option>
+                <option value="ECE">Electronics & Communication</option>
+                <option value="EEE">Electrical & Electronics</option>
+                <option value="MECH">Mechanical Engineering</option>
+                <option value="CIVIL">Civil Engineering</option>
+                <option value="AIML">AI & Machine Learning</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-sem">Semester</label>
+              <select id="reg-sem" required>
+                <option value="1">Sem 1</option>
+                <option value="2">Sem 2</option>
+                <option value="3">Sem 3</option>
+                <option value="4">Sem 4</option>
+                <option value="5" selected>Sem 5</option>
+                <option value="6">Sem 6</option>
+                <option value="7">Sem 7</option>
+                <option value="8">Sem 8</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password">Create Password</label>
+            <input type="password" id="reg-password" placeholder="At least 6 characters" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+          <p>SR University Examination Branch &bull; Ananthasagar, Warangal, Telangana</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN APPLICATION DASHBOARD (POST-LOGIN) -->
+  <section id="app-screen" class="app-screen hidden">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="header-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          </svg>
+        </div>
+        <div class="header-title-box">
+          <span class="header-title">SR UNIVERSITY</span>
+          <span class="header-tag">EXAMVAULT PORTAL</span>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <button class="nav-item active" data-view="dashboard" onclick="navigateTo('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" data-view="papers" onclick="navigateTo('papers')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          Browse Papers
+        </button>
+        <button class="nav-item" data-view="upload" onclick="navigateTo('upload')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Upload Paper
+        </button>
+        <button class="nav-item" data-view="saved" onclick="navigateTo('saved')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          Saved Papers
+        </button>
+        <button class="nav-item" data-view="leaderboard" onclick="navigateTo('leaderboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
+          Leaderboard
+        </button>
+      </nav>
+
+      <div class="header-right">
+        <div class="user-badge" onclick="navigateTo('profile')">
+          <div class="user-avatar" id="nav-user-avatar">SV</div>
+          <div class="user-info-text">
+            <span class="user-name-short" id="nav-user-name">Sai Kiran</span>
+            <span class="user-roll-short" id="nav-user-roll">2103A51001</span>
+          </div>
+        </div>
+        <button class="btn btn-outline-white btn-sm" onclick="handleLogout()" title="Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- App Content Wrapper -->
+    <main class="app-body">
+
+      <!-- VIEW 1: DASHBOARD OVERVIEW -->
+      <section id="view-dashboard" class="content-view active">
+        <div class="banner">
+          <div class="banner-content">
+            <h2>Welcome to SR University ExamVault</h2>
+            <p>Access verified past examination question papers, Mid-term assessments, and Semester question paper images across all departments.</p>
+            <div class="banner-actions">
+              <button class="btn btn-primary" onclick="navigateTo('papers')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Find Question Papers
+              </button>
+              <button class="btn btn-secondary" onclick="navigateTo('upload')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload Paper Image
+              </button>
+              <button class="btn btn-outline-white" onclick="eraseAllPapers()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                Erase All Papers
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics Stats -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-number" id="stat-total-papers">0</span>
+              <span class="metric-label">Archived Papers</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-number" id="stat-image-papers">0</span>
+              <span class="metric-label">Paper Scans / Images</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-number" id="stat-saved-papers">0</span>
+              <span class="metric-label">My Saved Papers</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-number" id="stat-karma-points">120</span>
+              <span class="metric-label">My Contributor Points</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Department Quick Links -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Browse by Department</h3>
+            <button class="btn btn-link" onclick="navigateTo('papers')">View All</button>
+          </div>
+          <div class="departments-grid">
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('CSE')">
+              <h4>Computer Science & Engineering</h4>
+              <p>Algorithms, OS, DBMS, Web Tech</p>
+              <span class="dept-count" id="count-cse">0 Papers</span>
+            </div>
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('AIML')">
+              <h4>Artificial Intelligence & ML</h4>
+              <p>Machine Learning, Deep Learning, NLP</p>
+              <span class="dept-count" id="count-aiml">0 Papers</span>
+            </div>
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('ECE')">
+              <h4>Electronics & Communication</h4>
+              <p>Digital Signals, VLSI, Microprocessors</p>
+              <span class="dept-count" id="count-ece">0 Papers</span>
+            </div>
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('EEE')">
+              <h4>Electrical & Electronics</h4>
+              <p>Power Systems, Control Systems, Machines</p>
+              <span class="dept-count" id="count-eee">0 Papers</span>
+            </div>
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('MECH')">
+              <h4>Mechanical Engineering</h4>
+              <p>Thermodynamics, CAD/CAM, Fluid Mechanics</p>
+              <span class="dept-count" id="count-mech">0 Papers</span>
+            </div>
+            <div class="dept-card" onclick="selectDepartmentAndBrowse('CIVIL')">
+              <h4>Civil Engineering</h4>
+              <p>Structural Analysis, Concrete Tech, Surveying</p>
+              <span class="dept-count" id="count-civil">0 Papers</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Uploads Section -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Recently Added Question Papers</h3>
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('papers')">View Full Archive</button>
+          </div>
+          <div class="papers-grid" id="recent-papers-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: BROWSE PAPERS ARCHIVE -->
+      <section id="view-papers" class="content-view">
+        <div class="page-title-row">
+          <div>
+            <h2>Question Papers Archive</h2>
+            <p>Filter by Department, Exam Type, and Semester to view original paper image scans.</p>
+          </div>
+          <div style="display:flex; gap: 8px;">
+            <button class="btn btn-outline" onclick="eraseAllPapers()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Erase All Papers
+            </button>
+            <button class="btn btn-primary" onclick="navigateTo('upload')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Upload Paper Image
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters Container -->
+        <div class="filter-panel">
+          <div class="filter-search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="paper-search-input" placeholder="Search by Subject Name or Course Code (e.g. Data Structures, 21CS301)..." oninput="applyFilters()">
+            <button class="btn btn-sm btn-clear" id="search-clear-btn" onclick="clearSearch()">Clear</button>
+          </div>
+
+          <!-- Department Filters -->
+          <div class="filter-group">
+            <span class="filter-label">Department:</span>
+            <div class="filter-pills" id="branch-pills">
+              <button class="filter-pill active" data-branch="ALL" onclick="setBranchFilter('ALL')">All Departments</button>
+              <button class="filter-pill" data-branch="CSE" onclick="setBranchFilter('CSE')">CSE</button>
+              <button class="filter-pill" data-branch="AIML" onclick="setBranchFilter('AIML')">AI & ML</button>
+              <button class="filter-pill" data-branch="ECE" onclick="setBranchFilter('ECE')">ECE</button>
+              <button class="filter-pill" data-branch="EEE" onclick="setBranchFilter('EEE')">EEE</button>
+              <button class="filter-pill" data-branch="MECH" onclick="setBranchFilter('MECH')">MECH</button>
+              <button class="filter-pill" data-branch="CIVIL" onclick="setBranchFilter('CIVIL')">CIVIL</button>
+            </div>
+          </div>
+
+          <!-- Exam Type & Semester Row -->
+          <div class="filter-row">
+            <div class="filter-group">
+              <span class="filter-label">Exam Type:</span>
+              <div class="filter-pills" id="exam-pills">
+                <button class="filter-pill active" data-exam="ALL" onclick="setExamFilter('ALL')">All Exams</button>
+                <button class="filter-pill" data-exam="Mid-1" onclick="setExamFilter('Mid-1')">Mid-1</button>
+                <button class="filter-pill" data-exam="Mid-2" onclick="setExamFilter('Mid-2')">Mid-2</button>
+                <button class="filter-pill" data-exam="Semester End" onclick="setExamFilter('Semester End')">Semester End</button>
+                <button class="filter-pill" data-exam="Supplementary" onclick="setExamFilter('Supplementary')">Supplementary</button>
+              </div>
+            </div>
+
+            <div class="filter-group-select">
+              <label for="sem-select" class="filter-label">Semester:</label>
+              <select id="sem-select" onchange="applyFilters()">
+                <option value="0">All Semesters</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Papers Listing Container -->
+        <div class="papers-header-row">
+          <span class="results-count" id="papers-count-label">Showing 0 papers</span>
+        </div>
+
+        <div class="papers-grid" id="all-papers-grid">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <!-- Empty state when no papers match -->
+        <div id="no-papers-found" class="empty-state hidden">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+          <h3>No Question Papers Found</h3>
+          <p>No papers match your selected search criteria. Try changing the department or exam filters, or upload a new paper.</p>
+          <button class="btn btn-primary mt-2" onclick="navigateTo('upload')">Upload This Paper Image</button>
+        </div>
+      </section>
+
+      <!-- VIEW 3: UPLOAD PAPER IMAGE -->
+      <section id="view-upload" class="content-view">
+        <div class="page-title-row">
+          <div>
+            <h2>Upload Question Paper Image</h2>
+            <p>Upload a clear photo or scanned image of an SR University question paper.</p>
+          </div>
+        </div>
+
+        <div class="upload-container">
+          <form id="upload-paper-form" class="upload-form" onsubmit="handlePaperUpload(event)">
+            
+            <div class="form-section-title">1. Course & Examination Information</div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="up-subject-name">Subject / Course Name *</label>
+                <input type="text" id="up-subject-name" placeholder="e.g. Design and Analysis of Algorithms" required>
+              </div>
+
+              <div class="form-group">
+                <label for="up-subject-code">Course Code *</label>
+                <input type="text" id="up-subject-code" placeholder="e.g. 21CS301" required>
+              </div>
+            </div>
+
+            <div class="form-row three-col">
+              <div class="form-group">
+                <label for="up-branch">Department *</label>
+                <select id="up-branch" required>
+                  <option value="CSE">Computer Science & Engineering (CSE)</option>
+                  <option value="AIML">Artificial Intelligence & ML (AIML)</option>
+                  <option value="ECE">Electronics & Communication (ECE)</option>
+                  <option value="EEE">Electrical & Electronics (EEE)</option>
+                  <option value="MECH">Mechanical Engineering (MECH)</option>
+                  <option value="CIVIL">Civil Engineering (CIVIL)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="up-sem">Semester *</label>
+                <select id="up-sem" required>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5" selected>Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="7">Semester 7</option>
+                  <option value="8">Semester 8</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="up-exam-type">Examination Type *</label>
+                <select id="up-exam-type" required>
+                  <option value="Mid-1">Mid Examination 1</option>
+                  <option value="Mid-2">Mid Examination 2</option>
+                  <option value="Semester End" selected>Semester End Examination</option>
+                  <option value="Supplementary">Supplementary Examination</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row three-col">
+              <div class="form-group">
+                <label for="up-year">Academic Year *</label>
+                <input type="text" id="up-year" placeholder="e.g. 2024-2025" value="2024-2025" required>
+              </div>
+
+              <div class="form-group">
+                <label for="up-month-year">Exam Month & Year *</label>
+                <input type="text" id="up-month-year" placeholder="e.g. November 2024" value="November 2024" required>
+              </div>
+
+              <div class="form-group">
+                <label for="up-regulation">Academic Regulation</label>
+                <input type="text" id="up-regulation" placeholder="e.g. R20 / R22" value="R22">
+              </div>
+            </div>
+
+            <div class="form-section-title mt-4">2. Question Paper Image File</div>
+
+            <div class="image-upload-dropzone" id="dropzone" onclick="triggerFileInput()">
+              <input type="file" id="paper-image-input" accept="image/*" class="file-input-hidden" onchange="handleImageSelection(event)">
+              
+              <div id="dropzone-prompt" class="dropzone-prompt">
+                <div class="upload-icon-circle">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <h4>Select or Drag Question Paper Image Here</h4>
+                <p>Upload clean photo or scan (JPEG, PNG, WebP) &bull; Maximum file size 10MB</p>
+                <button type="button" class="btn btn-outline btn-sm mt-2">Browse Image From Device</button>
+              </div>
+
+              <div id="dropzone-preview" class="dropzone-preview hidden">
+                <img id="preview-img" src="" alt="Question Paper Preview">
+                <div class="preview-overlay">
+                  <span id="preview-filename">paper_image.jpg</span>
+                  <button type="button" class="btn btn-sm btn-outline-white" onclick="removeSelectedImage(event)">Remove / Replace</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="sample-image-choice">
+              <span class="sample-label">Or choose an official SRU template scan:</span>
+              <button type="button" class="btn btn-sm btn-outline" onclick="loadSamplePaperImage('mid')">Use Mid Exam Template Image</button>
+              <button type="button" class="btn btn-sm btn-outline" onclick="loadSamplePaperImage('sem')">Use Semester Exam Template Image</button>
+            </div>
+
+            <div class="form-actions mt-4">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Upload & Publish Question Paper Image
+              </button>
+              <button type="button" class="btn btn-outline btn-lg" onclick="navigateTo('papers')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- VIEW 4: SAVED PAPERS -->
+      <section id="view-saved" class="content-view">
+        <div class="page-title-row">
+          <div>
+            <h2>My Saved Question Papers</h2>
+            <p>Access question paper images you have bookmarked for quick revision.</p>
+          </div>
+        </div>
+
+        <div class="papers-grid" id="saved-papers-grid">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div id="no-saved-papers" class="empty-state hidden">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          <h3>No Saved Papers Yet</h3>
+          <p>Click "Save" on any question paper in the archive to keep it handy here for examination preparation.</p>
+          <button class="btn btn-primary mt-2" onclick="navigateTo('papers')">Browse Question Papers</button>
+        </div>
+      </section>
+
+      <!-- VIEW 5: LEADERBOARD -->
+      <section id="view-leaderboard" class="content-view">
+        <div class="page-title-row">
+          <div>
+            <h2>Contributor Leaderboard</h2>
+            <p>Recognizing SR University students and faculty who upload question paper images to help fellow students.</p>
+          </div>
+        </div>
+
+        <div class="leaderboard-table-card">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Contributor Name</th>
+                <th>Department</th>
+                <th>Papers Uploaded</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VIEW 6: STUDENT PROFILE -->
+      <section id="view-profile" class="content-view">
+        <div class="page-title-row">
+          <div>
+            <h2>Student Profile</h2>
+            <p>Your institutional identification and examination repository statistics.</p>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar-lg" id="profile-avatar-lg">SV</div>
+            <div class="profile-header-info">
+              <h3 id="profile-name-display">Aitha Venkata Sai</h3>
+              <p id="profile-roll-display">Roll Number: 2103A51001</p>
+              <p id="profile-email-display">Email: saikiran.a@sru.edu.in</p>
+            </div>
+          </div>
+
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <span class="detail-label">Institution:</span>
+              <span class="detail-val">SR University, Warangal</span>
+            </div>
+            <div class="profile-detail-item">
+              <span class="detail-label">Department:</span>
+              <span class="detail-val" id="profile-branch-display">Computer Science & Engineering</span>
+            </div>
+            <div class="profile-detail-item">
+              <span class="detail-label">Current Semester:</span>
+              <span class="detail-val" id="profile-sem-display">Semester 5</span>
+            </div>
+            <div class="profile-detail-item">
+              <span class="detail-label">Papers Uploaded:</span>
+              <span class="detail-val" id="profile-uploads-display">3</span>
+            </div>
+            <div class="profile-detail-item">
+              <span class="detail-label">Points Earned:</span>
+              <span class="detail-val" id="profile-points-display">150</span>
+            </div>
+            <div class="profile-detail-item">
+              <span class="detail-label">Account Status:</span>
+              <span class="detail-val text-success">Active Institutional Member</span>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button class="btn btn-outline" onclick="handleLogout()">Sign Out</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <div class="footer-inner">
+        <p>&copy; 2024-2026 SR University Examination Vault &bull; Internal Academic Repository &bull; Warangal, Telangana</p>
+        <p class="footer-links">
+          <span>Official University Portal</span> &bull; <span>Regulation R20/R22</span>
+        </p>
+      </div>
+    </footer>
+  </section>
+
+  <!-- QUESTION PAPER IMAGE MODAL VIEWER -->
+  <div id="image-viewer-modal" class="modal-overlay hidden" onclick="handleModalBackdropClick(event)">
+    <div class="modal-window image-modal-window">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3 id="modal-paper-title">Subject Name</h3>
+          <p id="modal-paper-subtitle">Course Code &bull; Exam Type &bull; Department</p>
+        </div>
+        <div class="modal-header-actions">
+          <button class="btn btn-sm btn-outline" onclick="zoomImage(0.2)" title="Zoom In">Zoom In (+)</button>
+          <button class="btn btn-sm btn-outline" onclick="zoomImage(-0.2)" title="Zoom Out">Zoom Out (-)</button>
+          <button class="btn btn-sm btn-outline" onclick="resetZoom()" title="Reset Zoom">Fit</button>
+          <a id="modal-download-btn" href="#" download="sru_question_paper.jpg" class="btn btn-sm btn-primary">Download Image</a>
+          <button class="btn btn-sm btn-icon" onclick="closeImageViewerModal()" title="Close Viewer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body image-modal-body">
+        <div class="image-viewer-viewport" id="image-viewport">
+          <img id="modal-paper-image" src="" alt="Question Paper Original Image" class="modal-paper-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
